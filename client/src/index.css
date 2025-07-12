@@ -1,3 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import url('https://fonts.cdnfonts.com/css/lexend-tera');
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Colors */
+  --color-darker: #0D1B2A;
+  --color-dark: #1B263B;
+  --color-mid: #415A77;
+  --color-light: #778DA9;
+  --color-lighter: #E0E1DD;
+}
+
+* {
+  font-family: 'Lexend Tera', sans-serif;
+  scroll-behavior: smooth;
+}
