@@ -11,7 +11,11 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "tmp": "^0.2.3",
+    "YT_DLP_PATH-exec": "^1.0.2",
+    "ytdl-core": "^4.11.5"
   }
 }

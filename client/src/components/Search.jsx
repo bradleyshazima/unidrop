@@ -1,51 +1,65 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-const Search = () => {
-  const [value, setValue] = useState('')
+const Search = ({ onResult }) => {
+  const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleClear = () => {
-    setValue('')
-  }
+  const handleSubmit = async () => {
+    if (!url) {
+      setError('Please enter a URL.');
+      return;
+    }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (!value.trim()) return
-    console.log('Searching for:', value)
-    // Call your backend here
-  }
+    setLoading(true);
+    setError(null);
+    onResult(null); // Clear previous results
+
+    try {
+      const response = await fetch('http://localhost:5000/api/get-video', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch video information.');
+      }
+
+      const data = await response.json();
+      onResult(data); // Pass the real data to App.jsx
+    } catch (err) {
+      console.error('Error fetching video info:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-[700px] h-20 overflow-hidden rounded-2xl flex items-center my-16 bg-light dark:bg-mid"
-    >
-      <div className="relative h-full flex-1">
-        <input
-          type="search"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="eg: https://youtu.be/videourl"
-          className="h-full w-full bg-light outline-0 border-0 px-8 pr-12"
-        />
-        {value && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-darker"
-          >
-            <i className="fa-solid fa-xmark"></i>
-          </button>
-        )}
-      </div>
-
+    <div className='w-[700px] h-20 overflow-hidden rounded-2xl flex items-center my-20'>
+      <input
+        type="search"
+        placeholder='eg: https://youtu.be/videourl'
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        className='h-full flex-1 bg-light outline-0 border-0 px-8'
+        disabled={loading}
+      />
       <button
-        type="submit"
-        className="text-lighter font-semibold bg-dark px-8 h-full cursor-pointer"
+        type="button"
+        onClick={handleSubmit}
+        className='text-lighter font-semibold bg-dark px-8 h-full'
+        disabled={loading}
       >
-        FIND
+        {loading ? 'LOADING...' : 'FIND'}
       </button>
-    </form>
-  )
-}
+      {error && <p className="text-red-500 absolute mt-24 text-sm">{error}</p>}
+    </div>
+  );
+};
 
-export default Search
+export default Search;

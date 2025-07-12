@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import './App.css'
 import { Nav, Search, Steps, Footer, Resource } from './components'
 
 function App() {
+  const [videoData, setVideoData] = useState(null)
   return (
     <div className="min-h-screen flex flex-col bg-lighter dark:bg-darker">
       <Nav />
@@ -13,8 +15,9 @@ function App() {
         <p className="font-medium text-center text-darker dark:text-lighter mb-4">
           Download videos from anywhere on the net with UNIDROP
         </p>
-        <Search />
-        <Resource />
+
+        <Search onResult={setVideoData} />
+        {videoData && <Resource data={videoData} />}
         <Steps />
       </main>
 
