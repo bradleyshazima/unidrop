@@ -1,0 +1,11 @@
+# Node
+server/node_modules
+server/downloads
+
+# React
+client/node_modules
+dist
+
+# System
+.DS_Store
+.env
